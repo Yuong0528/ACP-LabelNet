@@ -1,6 +1,6 @@
 # ACP-ProtFusion
 
-Official reviewer release for **“ACP-ProtFusion: a multi-label framework for cancer-type-specific anticancer peptide prediction.”**
+This repository contains the source code and processed benchmark data for the article **“ACP-ProtFusion: a multi-label framework for cancer-type-specific anticancer peptide prediction.”**
 
 ACP-ProtFusion is a two-stage framework. Stage 1 adapts a pretrained protein language model to binary anticancer-peptide (ACP) recognition. Stage 2 transfers that representation to joint prediction of activity against breast, lung, colon, cervical, and skin cancers. The Stage 2 model combines ESM2 residue representations with explicit sequence features and a graph of cancer-label relationships.
 
@@ -8,21 +8,9 @@ This repository intentionally contains only the code and processed data needed t
 
 ## Method overview
 
-```text
-Stage 1
-ACP benchmark sequence -> ESM2-650M -> attention pooling -> ACP / non-ACP
-                                      |
-                                      v
-Stage 2                         transferred encoder
-                                      |
-Cancer-type sequence -> ESM2-650M + AAC/DPC/physicochemical features
-                                      |
-                         shared peptide representation
-                                      |
-                training-fold conditional label graph (2-layer GCN)
-                                      |
-                     five cancer-type-specific probabilities
-```
+[![Overview of the ACP-ProtFusion framework](assets/acp_protfusion_framework.png)](assets/ACP-ProtFUsion框架图_副本.pdf)
+
+*Overview of the ACP-ProtFusion framework. Click the figure to open the original PDF.*
 
 The reported Stage 2 configuration uses:
 
@@ -72,6 +60,36 @@ python -m pip install -r requirements.txt
 ```
 
 The first run downloads ESM2-650M from Hugging Face unless `--backbone` points to a local model directory. The manuscript experiments used one NVIDIA A100 GPU with 80 GB memory. If host memory is constrained, set `--num-workers 0`; changing batch size may change optimization behavior and should be reported.
+
+## Pretrained checkpoints
+
+The pretrained Stage 1 and fold-specific Stage 2 checkpoints used in the article will be provided through Google Drive:
+
+**Google Drive:** [Download ACP-ProtFusion checkpoints (link to be added)](https://drive.google.com/drive/folders/REPLACE_WITH_FOLDER_ID)
+
+<!-- Replace the placeholder URL above with the public Google Drive sharing URL before release. -->
+
+After downloading and extracting the archive, place the files under `outputs/checkpoints/`:
+
+```text
+outputs/checkpoints/
+├── stage1_set2_best.pt
+├── stage2_fold0.pt
+├── stage2_fold1.pt
+├── stage2_fold2.pt
+├── stage2_fold3.pt
+└── stage2_fold4.pt
+```
+
+The Stage 1 checkpoint can be passed explicitly when training Stage 2:
+
+```bash
+python scripts/train_stage2_kfold.py \
+  --fold 0 \
+  --stage1-checkpoint outputs/checkpoints/stage1_set2_best.pt
+```
+
+The Google Drive archive is provided for result verification and downstream use. All checkpoints correspond to the public ESM2-650M backbone identifier and the architecture implemented in this repository.
 
 ## Reproduce Stage 1
 
@@ -152,7 +170,7 @@ Stage 1 contains the two ACP-recognition benchmarks distributed with ACP-CapsPre
 - Random seeds are fixed for Python, NumPy, and PyTorch.
 - Fold assignments are deterministic (`fold_seed=0`).
 - The public model identifier replaces the private cluster path used during development.
-- Checkpoints are not included because each ESM2-650M checkpoint is large; all model-building and training code is included.
+- Pretrained checkpoints are distributed separately through the Google Drive link above because the ESM2-650M checkpoint files are too large for the source repository.
 - The repository does not contain raw database dumps. It contains only the processed benchmark tables used by the scripts.
 
 ## Citation
