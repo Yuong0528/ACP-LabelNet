@@ -65,7 +65,7 @@ The first run downloads ESM2-650M from Hugging Face unless `--backbone` points t
 
 The pretrained Stage 1 and fold-specific Stage 2 checkpoints used in the article will be provided through Google Drive:
 
-**Google Drive:** [Download ACP-ProtFusion checkpoints (link to be added)](https://drive.google.com/drive/folders/REPLACE_WITH_FOLDER_ID)
+**Google Drive:** [Download ACP-ProtFusion checkpoints (link to be added)] (https://drive.google.com/drive/folders/1_89y4kRLXF7SDd6hwULRhWUbrpDT5h70?usp=drive_link)
 
 <!-- Replace the placeholder URL above with the public Google Drive sharing URL before release. -->
 
